@@ -1,0 +1,1 @@
+mklink /D common "../master_tester/common"
