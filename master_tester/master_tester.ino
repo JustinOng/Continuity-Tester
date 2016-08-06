@@ -46,22 +46,10 @@ void loop() {
       lcd.print("E ");
     }
     else if (pin_states[i] & BIT_LOCAL) {
-      //has local connection
-      
-      //if BIT_HASCON is not set, then this pin is the group leader, display just the pin number
-      if (pin_states[i] & BIT_LEADER) {
-        lcd.print(i);
-        lcd.print(' ');
-      }
-      else if (pin_states[i] & BIT_HASCON) {
-        //pin is part of a group and is not the leader
-        //print the leader pin number (XXX)
-        lcd.print(pin_states[i] & 0x07);
-        lcd.print(' ');
-      }
-      else {
-        lcd.print("??");
-      }
+      // has local connection
+      // print id of group leader
+      lcd.print(pin_states[i] & 0x07);
+      lcd.print(' ');
     }
     else {
       lcd.print("F ");

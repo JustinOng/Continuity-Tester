@@ -34,7 +34,7 @@ void checkForLocalConnections(void) {
   //j: pin that is pulled high
   //k: all other pins, floating (input)
 
-  //the first pin in the group (two or more pins connected) is the "leader", will have BIT_LOCAL and BIT_LEADER set. BIT_HASCON will not be set.
+  //the first pin in the group (two or more pins connected) is the "leader", will have BIT_LOCAL and BIT_LEADER set
   //any other pins in the same group will have BIT_LOCAL and BIT_HASCON set, with XXX set to the index of the "leader"
   for(uint8_t i = 2; i <= 9; i++) {
     //if pin has not already been tested and found to have a local short
@@ -62,17 +62,13 @@ void checkForLocalConnections(void) {
       //test i
       if (getPinState(i) == 1) {
         //i and j are shorted
-        pin_states[i-2] |= (BIT_LOCAL | BIT_LEADER);
+        pin_states[i-2] |= (BIT_LOCAL | BIT_LEADER | (i-2));
         pin_states[j-2] |= (BIT_LOCAL | BIT_HASCON);
         //set XXX to the index of i
         pin_states[j-2] = (pin_states[j-2] & 0xF8) | (i-2);
       }
     }
   }
-}
-
-void checkForForeignConnections(void) {
-  //both master and slave have to run checkForLocalConnections() before this function
 }
 
 void resetPinStates(void) {  
