@@ -1,5 +1,8 @@
 #include <Arduino.h>
 
+#define PING_INTERVAL_MS 100
+#define PING_TIMEOUT 500
+
 #define BIT_LOCAL 0x80
 #define BIT_ERROR 0x40
 #define BIT_LEADER 0x20

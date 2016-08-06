@@ -1,9 +1,9 @@
 #include <LiquidCrystal.h>
-#include <SoftwareSerial.h>
+//#include <SoftwareSerial.h>
 #include "common/common.h"
 
 LiquidCrystal lcd(14, 15, 16, 17, 18, 19);
-SoftwareSerial serial(10, 11);
+//SoftwareSerial serial(10, 11);
 
 void setup() {
   resetPinStates();
@@ -13,7 +13,30 @@ void setup() {
   //use Software Serial on 10/11 tx/rx for debugging
 }
 
+uint32_t last_ping_sent = 0;
+uint32_t last_ping_received = 0;
+uint8_t connected = 0;
+
 void loop() {
+  uint32_t current_time = millis();
+  if (current_time - last_ping_sent > PING_INTERVAL_MS) {
+    Serial.write(0x00);
+    last_ping_sent = current_time;
+  }
+
+  while(Serial.available()) {
+    last_ping_received = current_time;
+    connected = true;
+    
+    switch(Serial.read()) {
+      
+    }
+  }
+
+  if (current_time - last_ping_received > PING_TIMEOUT) {
+    connected = false;
+  }
+  
   resetPinStates();
   checkForLocalConnections();
 
@@ -44,5 +67,12 @@ void loop() {
       lcd.print("F ");
     }
   }
-  delay(100);
+
+  lcd.setCursor(0, 1);
+  if (!connected) {
+    lcd.print("N");
+  }
+  else {
+    lcd.print("Y");
+  }
 }
