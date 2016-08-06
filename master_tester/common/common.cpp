@@ -63,7 +63,7 @@ void checkForLocalConnections(void) {
       if (getPinState(i) == 1) {
         //i and j are shorted
         pin_states[i-2] |= (BIT_LOCAL | BIT_LEADER | (i-2));
-        pin_states[j-2] |= (BIT_LOCAL | BIT_HASCON);
+        pin_states[j-2] |= BIT_LOCAL;
         //set XXX to the index of i
         pin_states[j-2] = (pin_states[j-2] & 0xF8) | (i-2);
       }
