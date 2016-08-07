@@ -11,13 +11,6 @@ void setup() {
   //use Hardware Serial for controlling the HC11 at 9600
   Serial.begin(9600);
   //use Software Serial on 10/11 tx/rx for debugging
-
-  while(1) {
-    for(uint8_t i = 2; i <= 9; i++) {
-      pinMode(i, OUTPUT);
-      digitalWrite(i, HIGH);
-    }
-  }
 }
 
 uint32_t last_ping_sent = 0;

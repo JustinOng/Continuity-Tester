@@ -59,12 +59,15 @@ void checkForForeignConnections(void) {
 }
 
 void SerialWriteWaitAck(uint8_t data) {
+  uint32_t start_time = millis();
   Serial.write(data);
   while(1) {
     if (Serial.available()) {
       last_ping_received = millis();
       if (Serial.read() == BIT_COMMAND) break;
     }
+
+    if (millis() - start_time > PING_TIMEOUT) return;
   }
 }
 
@@ -90,12 +93,12 @@ void loop() {
   
   resetPinStates();
 
-  //SerialWriteWaitAck(BIT_COMMAND | BIT_RST);
+  SerialWriteWaitAck(BIT_COMMAND | BIT_RST);
   
   checkForLocalConnections();
-  //resetPinsToInput();
+  resetPinsToInput();
   
-  //SerialWriteWaitAck(BIT_COMMAND | BIT_CHECKLOCAL);
+  SerialWriteWaitAck(BIT_COMMAND | BIT_CHECKLOCAL);
 
   for(uint8_t i = 0; i < 16; i++) {
     lcd.setCursor(i*2 % 16, i > 7);
