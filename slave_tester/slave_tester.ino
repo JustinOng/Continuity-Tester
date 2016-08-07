@@ -31,15 +31,15 @@ void loop() {
 
     uint8_t data = Serial.read();
     
-    switch(data & 0x70) {
+    switch(data & 0x78) {
       case BIT_HIGH:
-        pin = data & 0x0F;
-        digitalWrite(pin, HIGH);
+        pin = (data & 0x07) + 2;
 
         for(uint8_t k = 2; k <= 9; k++) {
           // if k has a local connection and belongs to the same group as pin
           // write HIGH as well
-          if (pin_states[k-2] & BIT_LOCAL && (pin_states[k-2] & 0x07) + 2 == pin) {
+          pinMode(k, OUTPUT);
+          if (pin_states[k-2] & BIT_LOCAL && (pin_states[k-2] & 0x07) == (pin_states[pin-2] & 0x07)) {
             digitalWrite(k, HIGH);
           }
           else {
@@ -50,8 +50,15 @@ void loop() {
         // acknowledge command
         Serial.write(BIT_COMMAND);
         break;
+      case BIT_LOW:
+        for(uint8_t k = 2; k <= 9; k++) {
+          pinMode(k, OUTPUT);
+          digitalWrite(k, LOW);
+        }
+        Serial.write(BIT_COMMAND);
+        break;
       case BIT_RST:
-        resetPinStates();
+        resetPinsToInput();
         Serial.write(BIT_COMMAND);
         break;
       case BIT_CHECKLOCAL:
