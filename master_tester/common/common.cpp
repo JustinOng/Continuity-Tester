@@ -75,11 +75,13 @@ void checkForLocalConnections(void) {
     if (pin_states[i-2] & BIT_LOCAL) {
       continue;
     }
-
-    //iterate over all pins other than the one under test, setting one to pulled high and the rest as inputs
-    //if pinState(i) == HIGH, then i and the pulled high pins are shorted
+    
+    resetPinsToInput();
+    
+    pinMode(i, OUTPUT);
+    digitalWrite(i, LOW);
     for(uint8_t j = 2; j <= 9; j++) {
-      //if pin is same as i or pin has a local short, continue
+      //if j is same as i or j already has a local short, continue
       if (j == i || pin_states[j-2] & BIT_LOCAL) continue;
 
       for(uint8_t k = 2; k <= 9; k++) {
@@ -90,11 +92,10 @@ void checkForLocalConnections(void) {
       }
       
       //sets j to HIGH
-      pinMode(j, OUTPUT);
-      digitalWrite(j, HIGH);
-
+      pinMode(j, INPUT_PULLUP);
+      
       //test i
-      if (getPinState(i) == 1) {
+      if (digitalRead(j) == 0) {
         //i and j are shorted
         pin_states[i-2] |= (BIT_LOCAL | BIT_LEADER | (i-2));
         pin_states[j-2] |= BIT_LOCAL;

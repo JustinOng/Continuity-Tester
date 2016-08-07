@@ -1,5 +1,4 @@
 #include <LiquidCrystal.h>
-//#include <SoftwareSerial.h>
 #include "common/common.h"
 
 LiquidCrystal lcd(14, 15, 16, 17, 18, 19);
@@ -10,7 +9,6 @@ void setup() {
   lcd.begin(16, 2);
   //use Hardware Serial for controlling the HC11 at 9600
   Serial.begin(9600);
-  //use Software Serial on 10/11 tx/rx for debugging
 }
 
 uint32_t last_ping_sent = 0;
@@ -95,7 +93,7 @@ void loop() {
   //SerialWriteWaitAck(BIT_COMMAND | BIT_RST);
   
   checkForLocalConnections();
-  resetPinsToInput();
+  //resetPinsToInput();
   
   //SerialWriteWaitAck(BIT_COMMAND | BIT_CHECKLOCAL);
 
