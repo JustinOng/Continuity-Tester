@@ -1,6 +1,6 @@
 #include "common.h"
 
-extern uint8_t pin_states[8] = {};
+extern uint8_t pin_states[16] = {};
 
 //pin states:
 //0bLEG0HXXX
@@ -26,6 +26,40 @@ char getPinState(uint8_t pin) {
   else {
     //state different meaning it followed the pullup/down
     return -1;
+  }
+}
+
+char getGroupState(uint8_t pin) {
+  if (pin_states[pin-2] & BIT_LOCAL) {
+    uint8_t leader = pin_states[pin-2] & 0x0F;
+    
+    for(uint8_t i = 2; i <= 9; i++) {
+      if (pin_states[i-2] & 0x0F == leader) {
+        pinMode(i, INPUT);
+      }
+    }
+    
+    uint8_t stateWhenPulledDown = digitalRead(pin);
+    
+    for(uint8_t i = 2; i <= 9; i++) {
+      if (pin_states[i-2] & 0x0F == leader) {
+        pinMode(i, INPUT_PULLUP);
+      }
+    }
+    
+    uint8_t stateWhenPulledUp = digitalRead(pin);
+    
+    if (stateWhenPulledDown == stateWhenPulledUp) {
+      //state is same meaning external HIGH/LOW is applied to the pin
+      return stateWhenPulledDown;
+    }
+    else {
+      //state different meaning it followed the pullup/down
+      return -1;
+    }
+  }
+  else {
+    return getPinState(pin);
   }
 }
 
@@ -65,7 +99,7 @@ void checkForLocalConnections(void) {
         pin_states[i-2] |= (BIT_LOCAL | BIT_LEADER | (i-2));
         pin_states[j-2] |= BIT_LOCAL;
         //set XXX to the index of i
-        pin_states[j-2] = (pin_states[j-2] & 0xF8) | (i-2);
+        pin_states[j-2] = (pin_states[j-2] & 0xF0) | (i-2);
       }
     }
   }
@@ -75,5 +109,11 @@ void resetPinStates(void) {
   for(uint8_t i = 2; i <= 9; i++) {
     pinMode(i, INPUT);
     pin_states[i-2] = 0x00;
+  }
+}
+
+void resetPinsToInput(void) {  
+  for(uint8_t i = 2; i <= 9; i++) {
+    pinMode(i, INPUT);
   }
 }
