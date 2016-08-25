@@ -21,7 +21,7 @@
 #define BIT_RST 0x10
 // BIT_HIZ resets all states ie set all as input
 
-#define BIT_CHECKLOCAL 0x80
+#define BIT_CHECKLOCAL 0x08
 
 // lowest 3 bits of transmitted byte reserved for pin number
 

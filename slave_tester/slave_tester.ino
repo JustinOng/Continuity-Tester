@@ -9,7 +9,7 @@ void setup() {
   resetPinStates();
   lcd.begin(16, 2);
   //use Hardware Serial for controlling the HC11 at 9600
-  Serial.begin(9600);
+  Serial.begin(115200);
   //use Software Serial on 10/11 tx/rx for debugging
 }
 
@@ -39,7 +39,7 @@ void loop() {
           // if k has a local connection and belongs to the same group as pin
           // write HIGH as well
           pinMode(k, OUTPUT);
-          if (pin_states[k-2] & BIT_LOCAL && (pin_states[k-2] & 0x07) == (pin_states[pin-2] & 0x07)) {
+          if ((pin_states[k-2] & BIT_LOCAL && (pin_states[k-2] & 0x0F) == (pin_states[pin-2] & 0x0F))) {
             digitalWrite(k, HIGH);
           }
           else {

@@ -106,15 +106,16 @@ void checkForLocalConnections(void) {
   }
 }
 
-void resetPinStates(void) {  
-  for(uint8_t i = 2; i <= 9; i++) {
-    pinMode(i, INPUT);
-    pin_states[i-2] = 0x00;
-  }
-}
-
 void resetPinsToInput(void) {  
   for(uint8_t i = 2; i <= 9; i++) {
     pinMode(i, INPUT);
+  }
+}
+
+void resetPinStates(void) {  
+  resetPinsToInput();
+  
+  for(uint8_t i = 0; i < 16; i++) {
+    pin_states[i] = 0x00;
   }
 }
